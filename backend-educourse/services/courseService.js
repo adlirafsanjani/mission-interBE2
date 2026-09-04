@@ -1,8 +1,29 @@
 const db = require('../config/database');
 
-// 1. SELECT: Mengambil semua data (Read All)
-const getAllCourses = async () => {
-    const [rows] = await db.query('SELECT * FROM courses');
+// 1. SELECT: Mengambil semua data (Read All) dengan dukungan Query Params (Filter, Search, Sort)
+const getAllCourses = async (reqQuery) => {
+    let query = 'SELECT * FROM courses WHERE 1=1';
+    let queryParams = [];
+
+    // Filter berdasarkan kategori (jika ada)
+    if (reqQuery.category) {
+        query += ' AND category = ?';
+        queryParams.push(reqQuery.category);
+    }
+
+    // Search berdasarkan judul/title (jika ada)
+    if (reqQuery.search) {
+        query += ' AND title LIKE ?';
+        queryParams.push(`%${reqQuery.search}%`);
+    }
+
+    // Sort berdasarkan kolom tertentu (jika ada)
+    if (reqQuery.sortBy) {
+        const sortOrder = reqQuery.order && reqQuery.order.toLowerCase() === 'desc' ? 'DESC' : 'ASC';
+        query += ` ORDER BY ${reqQuery.sortBy} ${sortOrder}`;
+    }
+
+    const [rows] = await db.query(query, queryParams);
     return rows;
 };
 
