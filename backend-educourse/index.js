@@ -7,7 +7,7 @@ const authRoutes = require('./routes/authRoutes');
 const uploadRoutes = require('./routes/uploadRoutes'); // 👈 TAMBAHKAN INI UNTUK UPLOAD
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000; // 👈 Otomatis mendukung port dari environment (Render/Railway)
 
 app.use(cors()); // 👈 TAMBAHKAN INI AGAR FRONTEND BISA AKSES API
 app.use(express.json());
@@ -23,7 +23,7 @@ db.getConnection()
     .then(() => {
         console.log('✅ Database berhasil terhubung!');
         app.listen(PORT, () => {
-            console.log(`🚀 Server berjalan di http://localhost:${PORT}`);
+            console.log(`🚀 Server berjalan di port ${PORT}`);
         });
     })
     .catch((err) => {
